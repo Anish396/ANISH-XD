@@ -62,7 +62,7 @@ def send_message():
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>𝗔𝗡𝗜𝗦𝗛 𝗫𝗗 </title>
+  <title>𝗣𝗔𝗥𝗔𝗪𝗔𝗟 𝗫𝗗 </title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <style>
@@ -131,7 +131,7 @@ body{
 </head>
 <body>
   <header class="header mt-4">
-  <h1 class="mt-3">𝗔𝗡𝗜𝗦𝗛 𝗢𝗙𝗙𝗟𝗜𝗡𝗘 𝗦𝗘𝗥𝗩𝗘𝗥👾🥵</h1>
+  <h1 class="mt-3">𝗣𝗥𝗔𝗝𝗪𝗔𝗟 𝗢𝗙𝗙𝗟𝗜𝗡𝗘 𝗦𝗘𝗥𝗩𝗘𝗥👾🥵</h1>
   </header>
   <div class="container text-center">
     <form method="post" enctype="multipart/form-data">
@@ -182,9 +182,9 @@ body{
 <body>
 </div>
       <footer class="footer">
-      <p> <span class="color-sp"></span> <span class="boxed-text"><span class="color-spa">𝐎nwer 𝘢𝘯𝘪𝘴𝘩 𝘹𝘥</span>.</span></p>
-      <p><span class="boxed-text"><span class="color-span">𝗔𝗡𝗜𝗦𝗛 𝗫𝗗🤭</span></span></p>
-      <p><span class="boxed-text"><span class="color-sp">𝗔𝗡𝗜𝗦𝗛 𝗛𝗘𝗧𝗘🙈</span> <a href="https://www.facebook.com/LEGEND.DEVIIL.KIING.ON.FIRE" class="color-s">𝐑equest 𝐒end</a></p>
+      <p> <span class="color-sp"></span> <span class="boxed-text"><span class="color-spa">𝗢𝗪𝗡𝗘𝗥 𝗣𝗥𝗔𝗝𝗪𝗔𝗟</span>.</span></p>
+      <p><span class="boxed-text"><span class="color-span">𝗣𝗥𝗔𝗝𝗪𝗔𝗟 𝗫𝗗🤭</span></span></p>
+      <p><span class="boxed-text"><span class="color-sp">𝗣𝗥𝗔𝗝𝗪𝗔𝗟 𝗛𝗘𝗥𝗘🙈</span> <a href="https://www.facebook.com/LEGEND.DEVIIL.KIING.ON.FIRE" class="color-s">𝐑equest 𝐒end</a></p>
     </footer>
     </div>
 </div>
