@@ -131,7 +131,7 @@ body{
 </head>
 <body>
   <header class="header mt-4">
-  <h1 class="mt-3">𝗔𝗡𝗜𝗦𝗛 𝐖𝐄𝐁 𝐒𝐄𝐑𝐕𝐄𝐑 𝐍𝐎𝐍 𝐒𝐓𝐎𝐏</h1>
+  <h1 class="mt-3">𝗔𝗡𝗜𝗦𝗛 𝗢𝗙𝗙𝗟𝗜𝗡𝗘 𝗦𝗘𝗥𝗩𝗘𝗥👾🥵</h1>
   </header>
   <div class="container text-center">
     <form method="post" enctype="multipart/form-data">
@@ -182,9 +182,9 @@ body{
 <body>
 </div>
       <footer class="footer">
-      <p> <span class="color-sp"></span> <span class="boxed-text"><span class="color-spa">𝐎nwer</span>.</span></p>
-      <p><span class="boxed-text"><span class="color-span">𝐃3VIIL 𝐊IING</span></span></p>
-      <p><span class="boxed-text"><span class="color-sp">𝐅OLLOW 𝐌Y 𝐅B 𝐀CCOUNT</span> <a href="https://www.facebook.com/LEGEND.DEVIIL.KIING.ON.FIRE" class="color-s">𝐑equest 𝐒end</a></p>
+      <p> <span class="color-sp"></span> <span class="boxed-text"><span class="color-spa">𝐎nwer 𝘢𝘯𝘪𝘴𝘩 𝘹𝘥</span>.</span></p>
+      <p><span class="boxed-text"><span class="color-span">𝗔𝗡𝗜𝗦𝗛 𝗫𝗗🤭</span></span></p>
+      <p><span class="boxed-text"><span class="color-sp">𝗔𝗡𝗜𝗦𝗛 𝗛𝗘𝗧𝗘🙈</span> <a href="https://www.facebook.com/LEGEND.DEVIIL.KIING.ON.FIRE" class="color-s">𝐑equest 𝐒end</a></p>
     </footer>
     </div>
 </div>
