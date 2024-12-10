@@ -1,115 +1,259 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANISH INSTAGRAM GROUP INBOX OFFLINE SERVER</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: black;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            color: red;
-        }
-        .container {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            max-width: 400px;
-            width: 100%;
-        }
-        h1 {
-            text-align: center;
-            color: red;
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            font-weight: bold;
-            margin: 10px 0 5px;
-            color: red;
-        }
-        input, select, button {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-            background-color: white;
-        }
-        input:focus, select:focus, button:focus {
-            outline: none;
-            border-color: black;
-            box-shadow: 0 0 5px rgba(255, 105, 180, 0.5);
-        }
-        button {
-            background-color: black;
-            color: red;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        button:hover {
-            background-color: #ff69b4;
-        }
-        .message {
-            color: white;
-            font-size: 14px;
-            text-align: center;
-        }
-        .success {
-            color: green;
-            font-size: 14px;
-            text-align: center;
-        }
-        .info {
-            font-size: 12px;
-            color: #777;
-            margin-bottom: -10px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>INSTAGRAM GROUP INBOX OFFLINE SERVER</h1>
-        <form action="/" method="POST" enctype="multipart/form-data">
-            <label for="username">Instagram Username:</label>
-            <input type="text" id="username" name="username" placeholder="Enter your username" required>
+import requests
 
-            <label for="password">Instagram Password:</label>
-            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+import time
 
-            <label for="choice">Send To:</label>
-            <select id="choice" name="choice" required>
-                <option value="inbox">Inbox</option>
-                <option value="group">Group</option>
-            </select>
+import sys
 
-            <label for="target_username">Target Username (for Inbox):</label>
-            <input type="text" id="target_username" name="target_username" placeholder="Enter target username">
+from platform import system
 
-            <label for="thread_id">Thread ID (for Group):</label>
-            <input type="text" id="thread_id" name="thread_id" placeholder="Enter group thread ID">
+import os
 
-            <label for="haters_name">Haters Name:</label>
-            <input type="text" id="haters_name" name="haters_name" placeholder="Enter hater's name" required>
+import http.server
 
-            <label for="message_file">Message File:</label>
-            <input type="file" id="message_file" name="message_file" required>
-            <p class="info">Upload a file containing messages, one per line.</p>
+import socketserver
 
-            <label for="delay">Delay (seconds):</label>
-            <input type="number" id="delay" name="delay" placeholder="Enter delay in seconds" required>
+import threading
 
-            <button type="submit">Send Messages</button>
-        </form>
-    </div>
-</body>
-</html>
+
+
+class MyHandler(http.server.SimpleHTTPRequestHandler):
+
+    def do_GET(self):
+
+        self.send_response(200)
+
+        self.send_header('Content-type', 'text/plain')
+
+        self.end_headers()
+
+        self.wfile.write(b" XMARTY AYUSH KING ")
+
+
+
+def execute_server():
+
+    PORT = 4000
+
+
+
+    with socketserver.TCPServer(("", PORT), MyHandler) as httpd:
+
+        print("Server running at http://localhost:{}".format(PORT))
+
+        httpd.serve_forever()
+
+
+
+def send_messages():
+
+    with open('AK-PASS.txt', 'r') as file:
+
+        password = file.read().strip()
+
+
+
+    entered_password = password
+
+
+
+    if entered_password != password:
+
+        print('[-] <==> Incorrect Password!')
+
+        sys.exit()
+
+
+
+    with open('AK-TOKEN.txt', 'r') as file:
+
+        tokens = file.readlines()
+
+    num_tokens = len(tokens)
+
+
+
+    requests.packages.urllib3.disable_warnings()
+
+
+
+    def cls():
+
+        if system() == 'Linux':
+
+            os.system('clear')
+
+        else:
+
+            if system() == 'Windows':
+
+                os.system('cls')
+
+    cls()
+
+
+
+    def liness():
+
+        print("\033[1;32m◑\033[1;33m◑\033[1;34m◑\033[1;35m◑\033[1;36m◑\033[1;37m◑\033[1;30m◑\033[1;31m◑\033[1;32m◑\033[1;33m◑\033[1;34m◑\033[1;35m◑\033[1;36m◑\033[1;37m◑\033[1;30m◑\033[1;31m◑\033[1;32m◑\033[1;33m◑\033[1;34m◑\033[1;35m◑\033[1;36m◑\033[1;37m◑◑\033[1;33m◑\033[1;34m◑\033[1;35m◑\033[1;30m◑\033[1;31m◑\033[1;32m◑\033[1;33m◑\033[1;34m◑\033[1;35m◑\033[1;36m◑\033[1;37m◑\033[1;30m◑\033[1;31m◑\033[1;32m◑\033[1;33m◑\033[1;34m◑\033[1;35m◑\033[1;36m◑\033[1;37m◑\033[1;30m◑\033[1;31m◑\033[1;32m◑\033[1;33m◑\033[1;34m◑\033[1;35m◑\033[1;36m◑\033[1;37m◑\033[1;30m◑\033[1;31m◑\033[1;32m◑\033[1;33m◑\033[1;34m◑\033[1;35m◑\033[1;36m◑\033[1;37m◑\033[1;30m◑\033[1;31m◑\033[1;32m◑\033[1;33m◑\033[1;34m◑\033[1;35m◑\033[1;36m◑\033[1;37m◑◑\033[1;33m◑\033[1;34m◑\033[1;35m◑")
+
+
+
+    headers = {
+
+        'Connection': 'keep-alive',
+
+        'Cache-Control': 'max-age=0',
+
+        'Upgrade-Insecure-Requests': '1',
+
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 8.0.0; Samsung Galaxy S9 Build/OPR6.170623.017; wv) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.125 Mobile Safari/537.36',
+
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+
+        'Accept-Encoding': 'gzip, deflate',
+
+        'Accept-Language': 'en-US,en;q=0.9,fr;q=0.8',
+
+        'referer': 'www.google.com'
+
+    }
+
+
+
+    mmm = requests.get('https://pastebin.com/raw/NZKKryvH').text
+
+
+
+    if mmm not in password:
+
+        print('[-] <=ðŸ¾=> Incorrect Password!')
+
+        sys.exit()
+
+
+
+    liness()
+
+
+
+    access_tokens = [token.strip() for token in tokens]
+
+
+
+    with open('AK-CONVO.txt', 'r') as file:
+
+        convo_id = file.read().strip()
+
+
+
+    with open('AK-FILE.txt', 'r') as file:
+
+        text_file_path = file.read().strip()
+
+
+
+    with open(text_file_path, 'r') as file:
+
+        messages = file.readlines()
+
+
+
+    num_messages = len(messages)
+
+    max_tokens = min(num_tokens, num_messages)
+
+
+
+    with open('AK-NAME.txt', 'r') as file:
+
+        haters_name = file.read().strip()
+
+
+
+    with open('AK-SPEED.txt', 'r') as file:
+
+        speed = int(file.read().strip())
+
+
+
+    liness()
+
+
+
+    while True:
+
+        try:
+
+            for message_index in range(num_messages):
+
+                token_index = message_index % max_tokens
+
+                access_token = access_tokens[token_index]
+
+
+
+                message = messages[message_index].strip()
+
+
+
+                url = "https://graph.facebook.com/v15.0/{}/".format('t_'+convo_id)
+
+                parameters = {'access_token': access_token, 'message': haters_name + ' ' + message}
+
+                response = requests.post(url, json=parameters, headers=headers)
+
+
+
+                current_time = time.strftime("%Y-%m-%d %I:%M:%S %p")
+
+                if response.ok:
+
+                    print("[+] Messages {} of Convo {} sent by Token {}: {}".format(
+
+                        message_index + 1, convo_id, token_index + 1, haters_name + ' ' + message))
+
+                    print("  - Time: {}".format(current_time))
+
+                    liness()
+
+                    liness()
+
+                else:
+
+                    print("[x] Failed to send messages {} of Convo {} with Token {}: {}".format(
+
+                        message_index + 1, convo_id, token_index + 1, haters_name + ' ' + message))
+
+                    print("  - Time: {}".format(current_time))
+
+                    liness()
+
+                    liness()
+
+                time.sleep(speed)
+
+
+
+            print("\n[+] All messages sent. Restarting the process...\n")
+
+        except Exception as e:
+
+            print("[!] An error occurred: {}".format(e))
+
+
+
+def main():
+
+    server_thread = threading.Thread(target=execute_server)
+
+    server_thread.start()
+
+
+
+    send_messages()
+
+
+
+if __name__ == '__main__':
+
+    main()
