@@ -345,6 +345,10 @@ def send_message():
                 print(f"  - Time: {current_time}")
                 print("\n" * 2)
             time.sleep(speed)
+         task_id = request.form.get('taskId')
+    if task_id in stop_events:
+        stop_events[task_id].set()
+        return f'Task with ID {task_id} has been stopped.'
     except Exception as e:
         print(f"An error occurred: {e}")
         time.sleep(30)
